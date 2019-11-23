@@ -6,7 +6,7 @@
         xmlns:wT="clr-namespace:Xceed.Wpf.Toolkit;assembly=Xceed.Wpf.Toolkit"
         xmlns:local="clr-namespace:GK3_ColorQuantizer"
         mc:Ignorable="d"
-        Title="MainWindow" Height="798" Width="1200" MinWidth="800" MinHeight="600">
+        Title="MainWindow" Height="900" Width="1600" MinWidth="800" MinHeight="600">
     <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="200"></ColumnDefinition>
@@ -33,20 +33,26 @@
                 <ColumnDefinition Width="1*"></ColumnDefinition>
             </Grid.ColumnDefinitions>
 
-            <Button Grid.Row="1" Grid.Column="1" Grid.ColumnSpan="2" Margin="10">Choose picture</Button>
+            <Button x:Name="ChoosePictureButton" Grid.Row="1" Grid.Column="1" Grid.ColumnSpan="2" Margin="10" Click="ChoosePictureButton_Click">Choose picture</Button>
 
             <Label Grid.Row="2" Grid.Column="1" HorizontalAlignment="Center" VerticalAlignment="Center" >Colours:</Label>
-            <wT:IntegerUpDown Grid.Row="2" Grid.Column="2" Margin="10" DefaultValue="256" Height="35"/>
+            <wT:IntegerUpDown x:Name="kInput" Grid.Row="2" Grid.Column="2" Margin="10" DefaultValue="256" Text="256" Height="35" ValueChanged="K_ValueChanged"/>
 
             <Label Grid.Row="3" Grid.Column="1" Grid.ColumnSpan="2" HorizontalAlignment="Left" VerticalAlignment="Center" >Algorithm:</Label>
-            <RadioButton GroupName="Algorithm" Grid.Row="4"  Grid.Column="1" Grid.ColumnSpan="2" Margin="10,10,0,0">None</RadioButton>
-            <RadioButton GroupName="Algorithm" Grid.Row="5" Grid.Column="1" Grid.ColumnSpan="2" Margin="10,10,0,0">Average dithering</RadioButton>
-            <RadioButton GroupName="Algorithm" Grid.Row="6" Grid.Column="1" Grid.ColumnSpan="2" Margin="10,10,0,0">Error diffusion dithering</RadioButton>
-            <RadioButton GroupName="Algorithm" Grid.Row="7" Grid.Column="1" Grid.ColumnSpan="2" Margin="10,10,0,0">Ordered dithering v1</RadioButton>
-            <RadioButton GroupName="Algorithm" Grid.Row="8" Grid.Column="1" Grid.ColumnSpan="2" Margin="10,10,0,0">Ordered dithering v2</RadioButton>
-            <RadioButton GroupName="Algorithm" Grid.Row="9" Grid.Column="1" Grid.ColumnSpan="2" Margin="10,10,0,0">Popularity algorithm</RadioButton>
+            <RadioButton x:Name="NoneRadio" GroupName="Algorithm" Grid.Row="4"  Grid.Column="1" Grid.ColumnSpan="2" Margin="10,10,0,0" 
+                         Checked="NoneRadio_Checked" IsChecked="True">None</RadioButton>
+            <RadioButton x:Name="AverageDitheringRadio" GroupName="Algorithm" Grid.Row="5" Grid.Column="1" Grid.ColumnSpan="2" Margin="10,10,0,0" 
+                         Checked="AverageDitheringRadio_Checked">Average dithering</RadioButton>
+            <RadioButton x:Name="ErrorDiffusionDitheringRadio" GroupName="Algorithm" Grid.Row="6" Grid.Column="1" Grid.ColumnSpan="2" Margin="10,10,0,0" 
+                         Checked="ErrorDiffusionDitheringRadio_Checked">Error diffusion dithering</RadioButton>
+            <RadioButton x:Name="OrderedDitheringV1Radio" GroupName="Algorithm" Grid.Row="7" Grid.Column="1" Grid.ColumnSpan="2" Margin="10,10,0,0" 
+                         Checked="OrderedDitheringV1Radio_Checked">Ordered dithering v1</RadioButton>
+            <RadioButton x:Name="OrderedDitheringV2Radio" GroupName="Algorithm" Grid.Row="8" Grid.Column="1" Grid.ColumnSpan="2" Margin="10,10,0,0" 
+                         Checked="OrderedDitheringV2Radio_Checked">Ordered dithering v2</RadioButton>
+            <RadioButton x:Name="PopularityAlgorithmRadio" GroupName="Algorithm" Grid.Row="9" Grid.Column="1" Grid.ColumnSpan="2" Margin="10,10,0,0" 
+                         Checked="PopularityAlgorithmRadio_Checked">Popularity algorithm</RadioButton>
         </Grid>
-        <Canvas x:Name="mainCanvas" Grid.Column="1" Loaded="mainCanvas_Loaded"/>
+        <Canvas x:Name="mainCanvas" Grid.Column="1" Loaded="mainCanvas_Loaded" />
 
     </Grid>
 </Window>
