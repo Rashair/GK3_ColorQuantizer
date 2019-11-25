@@ -33,5 +33,11 @@ namespace GK3_ColorQuantizer.Algorithms
         }
 
         public abstract void Apply(int Kr, int Kg, int Kb);
+
+
+        protected static int RoundToNeareastMultiple(int num, int multiple)
+        {
+            return ((num + multiple / 2) / multiple) * multiple;
+        }
     }
 }

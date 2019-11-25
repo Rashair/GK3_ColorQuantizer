@@ -75,50 +75,34 @@ namespace GK3_ColorQuantizer
             mainCanvas.Children.Add(host);
         }
 
-        private void K_ValueChanged(object sender, RoutedPropertyChangedEventArgs<object> e)
+
+        private void NoneRadio_Checked(object sender, RoutedEventArgs e)
         {
-            if (kInput.Value.HasValue)
+            if (imageBitmap != null)
             {
-                this.K = kInput.Value.Value;
+                algorithm = null;
+                SetBitmapImage();
+                SetColorInputsVisibility(Visibility.Collapsed);
             }
         }
 
-        private void kRInput_ValueChanged(object sender, RoutedPropertyChangedEventArgs<object> e)
+        private void NoneRadio_Unchecked(object sender, RoutedEventArgs e)
         {
-            if (kRInput.Value.HasValue)
-            {
-                this.Kr = kRInput.Value.Value;
-                algorithm?.Apply(Kr, Kg, Kb);
-            }
-        }
-
-        private void kGInput_ValueChanged(object sender, RoutedPropertyChangedEventArgs<object> e)
-        {
-            if (kGInput.Value.HasValue)
-            {
-                this.Kg = kGInput.Value.Value;
-                algorithm?.Apply(Kr, Kg, Kb);
-            }
-        }
-
-        private void kBInput_ValueChanged(object sender, RoutedPropertyChangedEventArgs<object> e)
-        {
-            if (kBInput.Value.HasValue)
-            {
-                this.Kb = kBInput.Value.Value;
-                algorithm?.Apply(Kr, Kg, Kb);
-            }
+            SetColorInputsVisibility(Visibility.Visible);
         }
 
         private void AverageDitheringRadio_Checked(object sender, RoutedEventArgs e)
         {
+            SetBitmapImage();
             this.algorithm = new AverageDitheringAlgorithm(imageBitmap);
             algorithm.Apply(Kr, Kg, Kb);
         }
 
         private void ErrorDiffusionDitheringRadio_Checked(object sender, RoutedEventArgs e)
         {
-
+            SetBitmapImage();
+            this.algorithm = new ErrorDiffusionDithering(imageBitmap);
+            algorithm.Apply(Kr, Kg, Kb);
         }
 
         private void OrderedDitheringV1Radio_Checked(object sender, RoutedEventArgs e)
@@ -168,20 +152,41 @@ namespace GK3_ColorQuantizer
         }
 
 
-        private void NoneRadio_Checked(object sender, RoutedEventArgs e)
+        private void K_ValueChanged(object sender, RoutedPropertyChangedEventArgs<object> e)
         {
-            if (imageBitmap != null)
+            if (kInput.Value.HasValue)
             {
-                algorithm = null;
-                SetBitmapImage();
-                SetColorInputsVisibility(Visibility.Collapsed);
+                this.K = kInput.Value.Value;
             }
         }
 
-        private void NoneRadio_Unchecked(object sender, RoutedEventArgs e)
+        private void kRInput_ValueChanged(object sender, RoutedPropertyChangedEventArgs<object> e)
         {
-            SetColorInputsVisibility(Visibility.Visible);
+            if (kRInput.Value.HasValue)
+            {
+                this.Kr = kRInput.Value.Value;
+                algorithm?.Apply(Kr, Kg, Kb);
+            }
         }
+
+        private void kGInput_ValueChanged(object sender, RoutedPropertyChangedEventArgs<object> e)
+        {
+            if (kGInput.Value.HasValue)
+            {
+                this.Kg = kGInput.Value.Value;
+                algorithm?.Apply(Kr, Kg, Kb);
+            }
+        }
+
+        private void kBInput_ValueChanged(object sender, RoutedPropertyChangedEventArgs<object> e)
+        {
+            if (kBInput.Value.HasValue)
+            {
+                this.Kb = kBInput.Value.Value;
+                algorithm?.Apply(Kr, Kg, Kb);
+            }
+        }
+
 
         private void ChoosePictureButton_Click(object sender, RoutedEventArgs e)
         {
