@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Media.Imaging;
 using GK3_ColorQuantizer.Algorithms;
@@ -7,73 +8,56 @@ namespace GK3_ColorQuantizer
 {
     public class AverageDitheringAlgorithm : Algorithm
     {
-        const int cubeSize = 8;
-        int[] cubes;
-
-        public AverageDitheringAlgorithm(WriteableBitmap bitmap) : base(bitmap)
+        public AverageDitheringAlgorithm(WriteableBitmap bitmap)
         {
-            cubes = new int[(bitmap.PixelWidth * bitmap.PixelHeight)];
-            unsafe
+            this.Bitmap = bitmap;
+        }
+
+        public override WriteableBitmap Bitmap
+        {
+            get => base.Bitmap;
+            set
             {
-                byte* bmpArray = (byte*)bitmap.BackBuffer.ToPointer();
-                for (int i = 0; i < bitmap.PixelHeight; ++i)
-                {
-                    for (int j = 0; j < bitmap.PixelWidth; ++j)
-                    {
-                        cubes[i * bitmap.PixelWidth + j] = ComputeCubeSum(bmpArray, i, j);
-                    }
-                }
+                base.Bitmap = value;
             }
         }
 
-        private unsafe int ComputeCubeSum(byte* bmp, int x, int y)
+
+
+        public override void Apply(int Kr, int Kg, int Kb)
         {
-            int sum = 0;
-            int xEnd = Math.Min(x + cubeSize, bitmap.PixelWidth);
-            int yEnd = Math.Min(y + cubeSize, bitmap.PixelHeight);
-            for (int row = x; row < xEnd; ++row)
-            {
-                var pos = bmp + row * bitmap.BackBufferStride + y * bytesPerPixel;
-                for (int col = y; col < yEnd; ++col)
-                {
-                    sum += (pos[0] + pos[1] + pos[2]) / 3;
-                    pos += bytesPerPixel;
-                }
-            }
+            int itR = 255 / (Kr - 1);
+            int itG = 255 / (Kg - 1);
+            int itB = 255 / (Kb - 1);
 
-            return sum / ((xEnd - x) * (yEnd - y));
-        }
-
-
-        public override void Apply(int K)
-        {
-            bitmap.Lock();
+            Bitmap.Lock();
             unsafe
             {
-                byte* bmpArray = (byte*)bitmap.BackBuffer.ToPointer();
+                byte* bmpArray = (byte*)Bitmap.BackBuffer.ToPointer();
+                byte* copyArray = (byte*)originalCopy.BackBuffer.ToPointer();
 
-                for (int i = 0; i < bitmap.PixelHeight; ++i)
+                for (int i = 0; i < Bitmap.PixelHeight; ++i)
                 {
-                    byte* currRow = bmpArray + i * bitmap.BackBufferStride;
-                    for (int j = 0; j < bitmap.PixelWidth; ++j)
+                    byte* currRow = bmpArray + i * Bitmap.BackBufferStride;
+                    byte* currRowCopy = copyArray + i * Bitmap.BackBufferStride;
+                    for (int j = 0; j < Bitmap.PixelWidth; ++j)
                     {
-                        int avg = ((int)currRow[0] + currRow[1] + currRow[2]) / 3;
-                        if (avg > (cubes[i * bitmap.PixelWidth + j]))
-                        {
-                            currRow[0] = currRow[1] = currRow[2] = 255;
-                        }
-                        else
-                        {
-                            currRow[0] = currRow[1] = currRow[2] = 0;
-                        }
-                        currRow[3] = 255;
+                        currRow[0] = (byte)RoundToNeareastMultiple(currRowCopy[0], itR);
+                        currRow[1] = (byte)RoundToNeareastMultiple(currRowCopy[1], itG);
+                        currRow[2] = (byte)RoundToNeareastMultiple(currRowCopy[2], itB);
 
                         currRow += bytesPerPixel;
+                        currRowCopy += bytesPerPixel;
                     }
                 }
             }
-            bitmap.AddDirtyRect(new System.Windows.Int32Rect(0, 0, bitmap.PixelWidth, bitmap.PixelHeight));
-            bitmap.Unlock();
+            Bitmap.AddDirtyRect(new System.Windows.Int32Rect(0, 0, Bitmap.PixelWidth, Bitmap.PixelHeight));
+            Bitmap.Unlock();
+        }
+
+        private static int RoundToNeareastMultiple(int num, int multiple)
+        {
+            return ((num + multiple / 2) / multiple) * multiple;
         }
     }
 }

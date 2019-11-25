@@ -10,18 +10,28 @@ namespace GK3_ColorQuantizer.Algorithms
     public abstract class Algorithm
     {
         protected WriteableBitmap bitmap;
+        protected WriteableBitmap originalCopy;
         protected int bytesPerPixel;
         protected int width;
         protected int height;
 
-        protected Algorithm(WriteableBitmap bitmap)
+        protected Algorithm()
         {
-            this.bitmap = bitmap;
-            this.bytesPerPixel = (bitmap.Format.BitsPerPixel + 7) / 8;
-            this.width = bitmap.PixelWidth;
-            this.height = bitmap.PixelHeight;
         }
 
-        public abstract void Apply(int K);
+        public virtual WriteableBitmap Bitmap
+        {
+            get => bitmap; 
+            set 
+            {
+                bitmap = value;
+                originalCopy = value.Clone();
+                bytesPerPixel = (bitmap.Format.BitsPerPixel + 7) / 8;
+                width = bitmap.PixelWidth;
+                height = bitmap.PixelHeight;
+            }
+        }
+
+        public abstract void Apply(int Kr, int Kg, int Kb);
     }
 }

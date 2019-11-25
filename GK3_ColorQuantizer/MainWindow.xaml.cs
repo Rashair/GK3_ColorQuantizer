@@ -24,22 +24,24 @@ namespace GK3_ColorQuantizer
     /// </summary>
     public partial class MainWindow : Window
     {
-        int width;
-        int height;
         Algorithm algorithm;
+        int K;
+        int Kr;
+        int Kg;
+        int Kb;
 
         // Interface
         const int minMargin = 10;
-        Uri imagePath = new Uri(@"pack://application:,,,/Resources/Lenna.png");
+        int width;
+        int height;
+        Uri imagePath = new Uri(@"pack://application:,,,/Resources/Lenna.bmp");
         WriteableBitmap imageBitmap;
-
-        int K;
-
 
         public MainWindow()
         {
             this.WindowStartupLocation = WindowStartupLocation.CenterScreen;
             InitializeComponent();
+            SetColorInputsVisibility(Visibility.Collapsed);
         }
 
         private void mainCanvas_Loaded(object sender, RoutedEventArgs e)
@@ -50,12 +52,6 @@ namespace GK3_ColorQuantizer
             SetBitmapImage();
         }
 
-        private void DrawOnBitmap()
-        {
-
-        }
-
-
         private void SetBitmapImage()
         {
             BitmapSource img = new BitmapImage(imagePath);
@@ -64,8 +60,12 @@ namespace GK3_ColorQuantizer
                 img = new TransformedBitmap(img,
                     new ScaleTransform(width / (img.Width + 2 * minMargin), height / (img.Height + 2 * minMargin)));
             }
-            this.imageBitmap = new WriteableBitmap(img);
+            if (img.Format != PixelFormats.Rgb24)
+            {
+                img = new FormatConvertedBitmap(img, PixelFormats.Rgb24, null, 0);
+            }
 
+            this.imageBitmap = new WriteableBitmap(img);
             var host = new Image();
             Canvas.SetLeft(host, (width - imageBitmap.Width) / 2);
             Canvas.SetTop(host, (height - imageBitmap.Height) / 2);
@@ -83,11 +83,37 @@ namespace GK3_ColorQuantizer
             }
         }
 
+        private void kRInput_ValueChanged(object sender, RoutedPropertyChangedEventArgs<object> e)
+        {
+            if (kRInput.Value.HasValue)
+            {
+                this.Kr = kRInput.Value.Value;
+                algorithm?.Apply(Kr, Kg, Kb);
+            }
+        }
+
+        private void kGInput_ValueChanged(object sender, RoutedPropertyChangedEventArgs<object> e)
+        {
+            if (kGInput.Value.HasValue)
+            {
+                this.Kg = kGInput.Value.Value;
+                algorithm?.Apply(Kr, Kg, Kb);
+            }
+        }
+
+        private void kBInput_ValueChanged(object sender, RoutedPropertyChangedEventArgs<object> e)
+        {
+            if (kBInput.Value.HasValue)
+            {
+                this.Kb = kBInput.Value.Value;
+                algorithm?.Apply(Kr, Kg, Kb);
+            }
+        }
+
         private void AverageDitheringRadio_Checked(object sender, RoutedEventArgs e)
         {
             this.algorithm = new AverageDitheringAlgorithm(imageBitmap);
-            algorithm.Apply(K);
-            DrawOnBitmap();
+            algorithm.Apply(Kr, Kg, Kb);
         }
 
         private void ErrorDiffusionDitheringRadio_Checked(object sender, RoutedEventArgs e)
@@ -107,15 +133,54 @@ namespace GK3_ColorQuantizer
 
         private void PopularityAlgorithmRadio_Checked(object sender, RoutedEventArgs e)
         {
-
+            SetColorInputsVisibility(Visibility.Hidden);
         }
+
+        private void PopularityAlgorithmRadio_Unchecked(object sender, RoutedEventArgs e)
+        {
+            SetColorInputsVisibility(Visibility.Visible);
+        }
+
+        private void SetColorInputsVisibility(Visibility visible)
+        {
+            if (visible == Visibility.Visible)
+            {
+                kRInput.Visibility = Visibility.Visible;
+                kGInput.Visibility = Visibility.Visible;
+                kBInput.Visibility = Visibility.Visible;
+                kInput.Visibility = Visibility.Collapsed;
+
+            }
+            else if (visible == Visibility.Hidden)
+            {
+                kRInput.Visibility = Visibility.Collapsed;
+                kGInput.Visibility = Visibility.Collapsed;
+                kBInput.Visibility = Visibility.Collapsed;
+                kInput.Visibility = Visibility.Visible;
+            }
+            else
+            {
+                kRInput.Visibility = Visibility.Collapsed;
+                kGInput.Visibility = Visibility.Collapsed;
+                kBInput.Visibility = Visibility.Collapsed;
+                kInput.Visibility = Visibility.Collapsed;
+            }
+        }
+
 
         private void NoneRadio_Checked(object sender, RoutedEventArgs e)
         {
             if (imageBitmap != null)
             {
+                algorithm = null;
                 SetBitmapImage();
+                SetColorInputsVisibility(Visibility.Collapsed);
             }
+        }
+
+        private void NoneRadio_Unchecked(object sender, RoutedEventArgs e)
+        {
+            SetColorInputsVisibility(Visibility.Visible);
         }
 
         private void ChoosePictureButton_Click(object sender, RoutedEventArgs e)
@@ -123,7 +188,7 @@ namespace GK3_ColorQuantizer
 
             OpenFileDialog dlg = new OpenFileDialog
             {
-                Filter = "Images (*.jpg, *.jpeg, *.jpe, *.jfif, *.png)|*.jpg;*.jpeg;*.jpe;*.jfif;*.png"
+                Filter = "Images (*.jpg, *.jpeg, *.jpe, *.jfif, *.png, *.bmp)|*.jpg;*.jpeg;*.jpe;*.jfif;*.png;*.bmp"
             };
 
             bool? result = dlg.ShowDialog();
@@ -131,6 +196,11 @@ namespace GK3_ColorQuantizer
             {
                 this.imagePath = new Uri(dlg.FileName);
                 SetBitmapImage();
+                if (algorithm != null)
+                {
+                    algorithm.Bitmap = imageBitmap;
+                    algorithm.Apply(Kr, Kg, Kb);
+                }
             }
         }
     }

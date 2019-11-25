@@ -15,16 +15,22 @@
         <Grid x:Name="MenuGrid" Background="{DynamicResource {x:Static SystemColors.MenuHighlightBrushKey}}">
             <Grid.RowDefinitions>
                 <RowDefinition Height="1*"></RowDefinition>
+                <RowDefinition Height="4*"></RowDefinition>
+                <RowDefinition Height="2*"></RowDefinition>
+
                 <RowDefinition Height="2*"></RowDefinition>
                 <RowDefinition Height="2*"></RowDefinition>
                 <RowDefinition Height="2*"></RowDefinition>
                 <RowDefinition Height="2*"></RowDefinition>
                 <RowDefinition Height="2*"></RowDefinition>
                 <RowDefinition Height="2*"></RowDefinition>
-                <RowDefinition Height="2*"></RowDefinition>
-                <RowDefinition Height="2*"></RowDefinition>
-                <RowDefinition Height="2*"></RowDefinition>
+
                 <RowDefinition Height="1*"></RowDefinition>
+
+                <RowDefinition Height="2*"></RowDefinition>
+                <RowDefinition Height="2*"></RowDefinition>
+                <RowDefinition Height="2*"></RowDefinition>
+                <RowDefinition Height="6*"></RowDefinition>
             </Grid.RowDefinitions>
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="1*"></ColumnDefinition>
@@ -35,22 +41,41 @@
 
             <Button x:Name="ChoosePictureButton" Grid.Row="1" Grid.Column="1" Grid.ColumnSpan="2" Margin="10" Click="ChoosePictureButton_Click">Choose picture</Button>
 
-            <Label Grid.Row="2" Grid.Column="1" HorizontalAlignment="Center" VerticalAlignment="Center" >Colours:</Label>
-            <wT:IntegerUpDown x:Name="kInput" Grid.Row="2" Grid.Column="2" Margin="10" DefaultValue="256" Text="256" Height="35" ValueChanged="K_ValueChanged"/>
-
-            <Label Grid.Row="3" Grid.Column="1" Grid.ColumnSpan="2" HorizontalAlignment="Left" VerticalAlignment="Center" >Algorithm:</Label>
-            <RadioButton x:Name="NoneRadio" GroupName="Algorithm" Grid.Row="4"  Grid.Column="1" Grid.ColumnSpan="2" Margin="10,10,0,0" 
-                         Checked="NoneRadio_Checked" IsChecked="True">None</RadioButton>
-            <RadioButton x:Name="AverageDitheringRadio" GroupName="Algorithm" Grid.Row="5" Grid.Column="1" Grid.ColumnSpan="2" Margin="10,10,0,0" 
+            <Label Grid.Row="2" Grid.Column="1" Grid.ColumnSpan="2" HorizontalAlignment="Left" VerticalAlignment="Center" >Algorithm:</Label>
+            <RadioButton x:Name="NoneRadio" GroupName="Algorithm" Grid.Row="3"  Grid.Column="1" Grid.ColumnSpan="2" Margin="10,10,0,0" 
+                         Checked="NoneRadio_Checked" Unchecked="NoneRadio_Unchecked" IsChecked="True">None</RadioButton>
+            <RadioButton x:Name="AverageDitheringRadio" GroupName="Algorithm" Grid.Row="4" Grid.Column="1" Grid.ColumnSpan="2" Margin="10,10,0,0" 
                          Checked="AverageDitheringRadio_Checked">Average dithering</RadioButton>
-            <RadioButton x:Name="ErrorDiffusionDitheringRadio" GroupName="Algorithm" Grid.Row="6" Grid.Column="1" Grid.ColumnSpan="2" Margin="10,10,0,0" 
+            <RadioButton x:Name="ErrorDiffusionDitheringRadio" GroupName="Algorithm" Grid.Row="5" Grid.Column="1" Grid.ColumnSpan="2" Margin="10,10,0,0" 
                          Checked="ErrorDiffusionDitheringRadio_Checked">Error diffusion dithering</RadioButton>
-            <RadioButton x:Name="OrderedDitheringV1Radio" GroupName="Algorithm" Grid.Row="7" Grid.Column="1" Grid.ColumnSpan="2" Margin="10,10,0,0" 
+            <RadioButton x:Name="OrderedDitheringV1Radio" GroupName="Algorithm" Grid.Row="6" Grid.Column="1" Grid.ColumnSpan="2" Margin="10,10,0,0" 
                          Checked="OrderedDitheringV1Radio_Checked">Ordered dithering v1</RadioButton>
-            <RadioButton x:Name="OrderedDitheringV2Radio" GroupName="Algorithm" Grid.Row="8" Grid.Column="1" Grid.ColumnSpan="2" Margin="10,10,0,0" 
+            <RadioButton x:Name="OrderedDitheringV2Radio" GroupName="Algorithm" Grid.Row="7" Grid.Column="1" Grid.ColumnSpan="2" Margin="10,10,0,0" 
                          Checked="OrderedDitheringV2Radio_Checked">Ordered dithering v2</RadioButton>
-            <RadioButton x:Name="PopularityAlgorithmRadio" GroupName="Algorithm" Grid.Row="9" Grid.Column="1" Grid.ColumnSpan="2" Margin="10,10,0,0" 
-                         Checked="PopularityAlgorithmRadio_Checked">Popularity algorithm</RadioButton>
+            <RadioButton x:Name="PopularityAlgorithmRadio" GroupName="Algorithm" Grid.Row="8" Grid.Column="1" Grid.ColumnSpan="2" Margin="10,10,0,0" 
+                         Checked="PopularityAlgorithmRadio_Checked" Unchecked="PopularityAlgorithmRadio_Unchecked">Popularity algorithm</RadioButton>
+
+
+            <Label Grid.Row="10" Grid.Column="1" HorizontalAlignment="Center" VerticalAlignment="Center" 
+                   Visibility="{Binding ElementName=kInput, Path=Visibility}">K</Label>
+            <wT:IntegerUpDown x:Name="kInput" Grid.Row="10" Grid.Column="2" Margin="10" DefaultValue="2" Text="2" Height="35" 
+                              ValueChanged="K_ValueChanged" Minimum="2" Maximum="256"/>
+
+
+            <Label Grid.Row="10" Grid.Column="1" HorizontalAlignment="Center" VerticalAlignment="Center" 
+                   Visibility="{Binding ElementName=kRInput, Path=Visibility}">Kr</Label>
+            <wT:IntegerUpDown x:Name="kRInput" Grid.Row="10" Grid.Column="2" Margin="10" DefaultValue="2" Text="2" Height="35"
+                              ValueChanged="kRInput_ValueChanged"  Minimum="2" Maximum="256"/>
+
+            <Label Grid.Row="11" Grid.Column="1" HorizontalAlignment="Center" VerticalAlignment="Center" 
+                   Visibility="{Binding ElementName=kGInput, Path=Visibility}" >Kg</Label>
+            <wT:IntegerUpDown x:Name="kGInput" Grid.Row="11" Grid.Column="2" Margin="10" DefaultValue="2" Text="2" Height="35" 
+                              ValueChanged="kGInput_ValueChanged"  Minimum="2" Maximum="256"/>
+
+            <Label Grid.Row="12" Grid.Column="1" HorizontalAlignment="Center" VerticalAlignment="Center" 
+                   Visibility="{Binding ElementName=kBInput, Path=Visibility}" >Kb</Label>
+            <wT:IntegerUpDown x:Name="kBInput" Grid.Row="12" Grid.Column="2" Margin="10" DefaultValue="2" Text="2" Height="35" 
+                              ValueChanged="kBInput_ValueChanged"  Minimum="2" Maximum="256"/>
         </Grid>
         <Canvas x:Name="mainCanvas" Grid.Column="1" Loaded="mainCanvas_Loaded" />
 
