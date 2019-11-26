@@ -30,9 +30,9 @@ namespace GK3_ColorQuantizer.Algorithms
                     byte* currRowCopy = copyArray + i * Bitmap.BackBufferStride;
                     for (int j = 0; j < Bitmap.PixelWidth; ++j)
                     {
-                        currRow[0] = RoundToNeareastMultiple(currRowCopy[0], itR).ToByte();
+                        currRow[0] = RoundToNeareastMultiple(currRowCopy[0], itB).ToByte();
                         currRow[1] = RoundToNeareastMultiple(currRowCopy[1], itG).ToByte();
-                        currRow[2] = RoundToNeareastMultiple(currRowCopy[2], itB).ToByte();
+                        currRow[2] = RoundToNeareastMultiple(currRowCopy[2], itR).ToByte();
 
                         currRow += bytesPerPixel;
                         currRowCopy += bytesPerPixel;

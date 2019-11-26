@@ -28,13 +28,13 @@ namespace GK3_ColorQuantizer.Algorithms
                 for (int i = 0; i < bitmap.PixelHeight; ++i)
                 {
                     byte* currPos = bmpArray + i * bitmap.BackBufferStride;
-                    byte* currCopyPos = copyArray + i * bitmap.BackBufferStride;
+                    byte* currCopyPos = copyArray + i * originalCopy.BackBufferStride;
                     flag = (i == bitmap.PixelHeight - 1 ? 4 : 0);
                     for (int j = 0; j < bitmap.PixelWidth; ++j)
                     {
                         flag |= (j == bitmap.PixelWidth - 1 ? 2 : (j == 0 ? 1 : 0));
 
-                        byte newVal = RoundToNeareastMultiple(currPos[0], itR).ToByte();
+                        byte newVal = RoundToNeareastMultiple(currPos[0], itB).ToByte();
                         PropagateError(currPos[0] - newVal, 0, currPos, currCopyPos, flag);
                         currPos[0] = newVal;
 
@@ -42,7 +42,7 @@ namespace GK3_ColorQuantizer.Algorithms
                         PropagateError(currPos[1] - newVal, 1, currPos, currCopyPos, flag);
                         currPos[1] = newVal;
 
-                        newVal = RoundToNeareastMultiple(currPos[2], itB).ToByte();
+                        newVal = RoundToNeareastMultiple(currPos[2], itR).ToByte();
                         PropagateError(currPos[2] - newVal, 2, currPos, currCopyPos, flag);
                         currPos[2] = newVal;
 

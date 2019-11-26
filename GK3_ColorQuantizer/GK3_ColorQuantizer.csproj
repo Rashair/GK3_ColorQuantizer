@@ -123,10 +123,13 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="Resources\Lenna.png" />
+    <Resource Include="Resources\lena_color32.png" />
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="Resources\Lenna.bmp" />
+    <Resource Include="Resources\lena_grayscale.bmp" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\lena_color24.gif" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

@@ -34,8 +34,10 @@ namespace GK3_ColorQuantizer
         const int minMargin = 10;
         int width;
         int height;
-        Uri imagePath = new Uri(@"pack://application:,,,/Resources/Lenna.bmp");
+        Uri imagePath = new Uri(@"pack://application:,,,/Resources/lena_grayscale.bmp");
         WriteableBitmap imageBitmap;
+        WriteableBitmap algorithmBitmap;
+        Window currAlgWindow;
 
         public MainWindow()
         {
@@ -60,9 +62,9 @@ namespace GK3_ColorQuantizer
                 img = new TransformedBitmap(img,
                     new ScaleTransform(width / (img.Width + 2 * minMargin), height / (img.Height + 2 * minMargin)));
             }
-            if (img.Format != PixelFormats.Rgb24)
+            if (img.Format != PixelFormats.Bgra32)
             {
-                img = new FormatConvertedBitmap(img, PixelFormats.Rgb24, null, 0);
+                img = new FormatConvertedBitmap(img, PixelFormats.Bgr32, null, 0);
             }
 
             this.imageBitmap = new WriteableBitmap(img);
@@ -70,6 +72,8 @@ namespace GK3_ColorQuantizer
             Canvas.SetLeft(host, (width - imageBitmap.Width) / 2);
             Canvas.SetTop(host, (height - imageBitmap.Height) / 2);
             host.Source = imageBitmap;
+
+            algorithmBitmap = imageBitmap.Clone();
 
             mainCanvas.Children.Clear();
             mainCanvas.Children.Add(host);
@@ -91,18 +95,23 @@ namespace GK3_ColorQuantizer
             SetColorInputsVisibility(Visibility.Visible);
         }
 
+
         private void AverageDitheringRadio_Checked(object sender, RoutedEventArgs e)
         {
             SetBitmapImage();
-            this.algorithm = new AverageDitheringAlgorithm(imageBitmap);
+            this.algorithm = new AverageDitheringAlgorithm(algorithmBitmap);
             algorithm.Apply(Kr, Kg, Kb);
+
+            OpenNewWindow();
         }
 
         private void ErrorDiffusionDitheringRadio_Checked(object sender, RoutedEventArgs e)
         {
             SetBitmapImage();
-            this.algorithm = new ErrorDiffusionDithering(imageBitmap);
+            this.algorithm = new ErrorDiffusionDithering(algorithmBitmap);
             algorithm.Apply(Kr, Kg, Kb);
+
+            OpenNewWindow();
         }
 
         private void OrderedDitheringV1Radio_Checked(object sender, RoutedEventArgs e)
@@ -113,6 +122,25 @@ namespace GK3_ColorQuantizer
         private void OrderedDitheringV2Radio_Checked(object sender, RoutedEventArgs e)
         {
 
+        }
+
+        private void OpenNewWindow()
+        {
+            const int margin = 50;
+            currAlgWindow = new Window { Owner = this };
+            var w = imageBitmap.Width;
+            var h = imageBitmap.Height;
+            var canvas = new Canvas { Width = w + margin * 2, Height = h + margin * 2 };
+
+            var img = new Image { Source = algorithmBitmap };
+            Canvas.SetLeft(img, (canvas.Width - w) / 2);
+            Canvas.SetTop(img, (canvas.Height - h) / 2);
+            canvas.Children.Add(img);
+
+            currAlgWindow.SizeToContent = SizeToContent.WidthAndHeight;
+            currAlgWindow.Content = canvas;
+            currAlgWindow.WindowStartupLocation = WindowStartupLocation.CenterOwner;
+            currAlgWindow.Show();
         }
 
         private void PopularityAlgorithmRadio_Checked(object sender, RoutedEventArgs e)
@@ -190,22 +218,18 @@ namespace GK3_ColorQuantizer
 
         private void ChoosePictureButton_Click(object sender, RoutedEventArgs e)
         {
-
             OpenFileDialog dlg = new OpenFileDialog
             {
-                Filter = "Images (*.jpg, *.jpeg, *.jpe, *.jfif, *.png, *.bmp)|*.jpg;*.jpeg;*.jpe;*.jfif;*.png;*.bmp"
+                Filter = "Images (*.jpg, *.jpeg, *.jpe, *.jfif, *.png, *.bmp, *.gif, *.tiff)|*.jpg;*.jpeg;*.jpe;*.jfif;*.png;*.bmp;*.gif;*.tiff"
             };
 
             bool? result = dlg.ShowDialog();
             if (result == true)
             {
+                currAlgWindow?.Close();
                 this.imagePath = new Uri(dlg.FileName);
                 SetBitmapImage();
-                if (algorithm != null)
-                {
-                    algorithm.Bitmap = imageBitmap;
-                    algorithm.Apply(Kr, Kg, Kb);
-                }
+                NoneRadio.IsChecked = true;
             }
         }
     }
