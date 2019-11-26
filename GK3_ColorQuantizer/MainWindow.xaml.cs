@@ -62,7 +62,7 @@ namespace GK3_ColorQuantizer
                 img = new TransformedBitmap(img,
                     new ScaleTransform(width / (img.Width + 2 * minMargin), height / (img.Height + 2 * minMargin)));
             }
-            if (img.Format != PixelFormats.Bgra32)
+            if (img.Format != PixelFormats.Bgr32)
             {
                 img = new FormatConvertedBitmap(img, PixelFormats.Bgr32, null, 0);
             }
@@ -126,6 +126,7 @@ namespace GK3_ColorQuantizer
 
         private void OpenNewWindow()
         {
+            // TODO: Bug with image resizes
             const int margin = 50;
             currAlgWindow = new Window { Owner = this };
             var w = imageBitmap.Width;

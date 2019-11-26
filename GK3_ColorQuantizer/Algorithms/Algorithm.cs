@@ -10,7 +10,7 @@ namespace GK3_ColorQuantizer.Algorithms
     public abstract class Algorithm
     {
         protected WriteableBitmap bitmap;
-        protected WriteableBitmap originalCopy;
+        protected byte[] originalCopy;
         protected int bytesPerPixel;
         protected int width;
         protected int height;
@@ -25,10 +25,12 @@ namespace GK3_ColorQuantizer.Algorithms
             set 
             {
                 bitmap = value;
-                originalCopy = value.Clone();
                 bytesPerPixel = (bitmap.Format.BitsPerPixel + 7) / 8;
                 width = bitmap.PixelWidth;
                 height = bitmap.PixelHeight;
+
+                originalCopy = new byte[height * bitmap.BackBufferStride];
+                bitmap.CopyPixels(originalCopy, bitmap.BackBufferStride, 0);
             }
         }
 
@@ -37,7 +39,7 @@ namespace GK3_ColorQuantizer.Algorithms
 
         protected static int RoundToNeareastMultiple(int num, int multiple)
         {
-            return ((num + multiple / 2) / multiple) * multiple;
+            return (int)(((num + multiple / 2) / multiple) * multiple);
         }
     }
 }

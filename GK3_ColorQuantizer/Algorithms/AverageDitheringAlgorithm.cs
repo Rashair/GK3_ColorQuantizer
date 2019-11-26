@@ -21,25 +21,22 @@ namespace GK3_ColorQuantizer.Algorithms
             Bitmap.Lock();
             unsafe
             {
-                byte* bmpArray = (byte*)Bitmap.BackBuffer.ToPointer();
-                byte* copyArray = (byte*)originalCopy.BackBuffer.ToPointer();
-
-                for (int i = 0; i < Bitmap.PixelHeight; ++i)
+                int copyIt = 0;
+                byte* currPos = (byte*)Bitmap.BackBuffer.ToPointer();
+                for (int i = 0; i < height; ++i)
                 {
-                    byte* currRow = bmpArray + i * Bitmap.BackBufferStride;
-                    byte* currRowCopy = copyArray + i * Bitmap.BackBufferStride;
-                    for (int j = 0; j < Bitmap.PixelWidth; ++j)
+                    for (int j = 0; j < width; ++j)
                     {
-                        currRow[0] = RoundToNeareastMultiple(currRowCopy[0], itB).ToByte();
-                        currRow[1] = RoundToNeareastMultiple(currRowCopy[1], itG).ToByte();
-                        currRow[2] = RoundToNeareastMultiple(currRowCopy[2], itR).ToByte();
+                        currPos[0] = RoundToNeareastMultiple(originalCopy[copyIt], itB).ToByte();
+                        currPos[1] = RoundToNeareastMultiple(originalCopy[copyIt + 1], itG).ToByte();
+                        currPos[2] = RoundToNeareastMultiple(originalCopy[copyIt + 2], itR).ToByte();
 
-                        currRow += bytesPerPixel;
-                        currRowCopy += bytesPerPixel;
+                        currPos += bytesPerPixel;
+                        copyIt += bytesPerPixel;
                     }
                 }
             }
-            Bitmap.AddDirtyRect(new System.Windows.Int32Rect(0, 0, Bitmap.PixelWidth, Bitmap.PixelHeight));
+            Bitmap.AddDirtyRect(new System.Windows.Int32Rect(0, 0, width, height));
             Bitmap.Unlock();
         }
     }

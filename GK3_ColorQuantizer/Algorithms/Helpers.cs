@@ -10,7 +10,7 @@ namespace GK3_ColorQuantizer.Algorithms
     {
         public static byte ToByte(this int i)
         {
-            return (byte)(i > 255 ? 255 : i);
+            return (byte)(i > 255 ? 255 : i < 0 ? 0 : i);
         }
     }
 }
