@@ -15,10 +15,10 @@ namespace GK3_ColorQuantizer.Algorithms
             int itG = 255 / (Kg - 1);
             int itB = 255 / (Kb - 1);
             var bmpRect = new System.Windows.Int32Rect(0, 0, width, height);
+            bitmap.WritePixels(bmpRect, originalCopy, bitmap.BackBufferStride, 0); // Copy cached original image
 
-            bitmap.WritePixels(bmpRect, originalCopy, bitmap.BackBufferStride, 0);
             bitmap.Lock();
-            // Copy cached original image
+
             unsafe
             {
                 byte* bmpArray = (byte*)bitmap.BackBuffer.ToPointer();

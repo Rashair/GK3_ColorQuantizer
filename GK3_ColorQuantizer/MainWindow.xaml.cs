@@ -129,11 +129,13 @@ namespace GK3_ColorQuantizer
             // TODO: Bug with image resizes
             const int margin = 50;
             currAlgWindow = new Window { Owner = this };
-            var w = imageBitmap.Width;
-            var h = imageBitmap.Height;
-            var canvas = new Canvas { Width = w + margin * 2, Height = h + margin * 2 };
+            var w = algorithmBitmap.Width;
+            var h = algorithmBitmap.Height;
+            var canvas = new Canvas { Width = w + +margin * 2, Height = h + margin * 2 };
 
-            var img = new Image { Source = algorithmBitmap };
+            var img = new Image { Source = algorithmBitmap, UseLayoutRounding = false, SnapsToDevicePixels = true };
+            RenderOptions.SetBitmapScalingMode(img, BitmapScalingMode.NearestNeighbor);
+
             Canvas.SetLeft(img, (canvas.Width - w) / 2);
             Canvas.SetTop(img, (canvas.Height - h) / 2);
             canvas.Children.Add(img);
