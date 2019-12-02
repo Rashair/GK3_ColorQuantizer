@@ -9,34 +9,31 @@ namespace GK3_ColorQuantizer.Algorithms
 {
     public class PopularityAlgorithm : Algorithm
     {
-        private static readonly int[] colorCounts;
-        private static readonly int[] indexes;
-
-        static PopularityAlgorithm()
-        {
-            colorCounts = new int[256 * 256 * 256];
-            indexes = Enumerable.Range(0, 256 * 256 * 256).ToArray();
-        }
-
-        private int[] currentPalette;
+        private int[] colorCounts;
+        private int[] indexes;
+        private (int B, int G, int R)[] currentPalette;
 
         public PopularityAlgorithm(WriteableBitmap bitmap)
         {
             this.Bitmap = bitmap;
+            colorCounts = new int[256 * 256 * 256];
+            indexes = Enumerable.Range(0, 256 * 256 * 256).ToArray();
 
             for (int i = 0; i < originalCopy.Length; i += bytesPerPixel)
             {
                 int col = (originalCopy[i] << 16) | (originalCopy[i + 1] << 8) | originalCopy[i + 2];
-                colorCounts[col] += 1;
+                ++colorCounts[col];
             }
 
+            var rnd = new Random();
+           // indexes = indexes.OrderBy(x => rnd.Next()).ToArray();
             Array.Sort(colorCounts, indexes, Comparer<int>.Create((a, b) => b.CompareTo(a)));
         }
 
         public override void Apply(int Kr, int Kg, int Kb)
         {
             int K = Kr;
-            currentPalette = indexes.Take(K).ToArray();
+            currentPalette = indexes.Take(K).Select(x => GetBGR(x)).ToArray();
 
             Bitmap.Lock();
             unsafe
@@ -47,8 +44,7 @@ namespace GK3_ColorQuantizer.Algorithms
                 {
                     for (int j = 0; j < width; ++j)
                     {
-                        int color = (originalCopy[copyIt] << 16) | (originalCopy[copyIt + 1] << 8) | (originalCopy[copyIt + 2]);
-                        var (B, G, R) = GetNearestColor(color);
+                        var (B, G, R) = GetNearestColor((originalCopy[copyIt], originalCopy[copyIt + 1], originalCopy[copyIt + 2]));
                         currPos[0] = B.ToByte();
                         currPos[1] = G.ToByte();
                         currPos[2] = R.ToByte();
@@ -62,24 +58,13 @@ namespace GK3_ColorQuantizer.Algorithms
             Bitmap.Unlock();
         }
 
-        private (int B, int G, int R) GetNearestColor(int color)
+        private (int B, int G, int R) GetNearestColor((int B, int G, int R) col)
         {
-            int bestColor = indexes[0];
-            int minDifference = int.MaxValue;
-
-            var (Bcolor, Gcolor, Rcolor) = GetRGB(color);
-            for (int i = 0; i < currentPalette.Length; ++i)
+            var bestColor = currentPalette[0];
+            var minDifference = GetDistanceBetweenColors(currentPalette[0], col);
+            for (int i = 1; i < currentPalette.Length && minDifference > 0; ++i)
             {
-                int targetColor = currentPalette[i];
-                var (B, G, R) = GetRGB(targetColor);
-
-                int dist = GetDistanceBetweenColors(R, Rcolor, G, Gcolor, B, Bcolor);
-                // if a difference is zero, we're good because it won't get better
-                if (dist == 0)
-                {
-                    bestColor = currentPalette[i];
-                    break;
-                }
+                int dist = GetDistanceBetweenColors(currentPalette[i], col);
 
                 if (dist < minDifference)
                 {
@@ -88,19 +73,20 @@ namespace GK3_ColorQuantizer.Algorithms
                 }
             }
 
-            return GetRGB(bestColor);
+            return bestColor;
         }
 
-        private (int B, int G, int R) GetRGB(int col)
+        private (int B, int G, int R) GetBGR(int col)
         {
             return ((col >> 16) & 0xFF, (col >> 8) & 0xFF, col & 0xFF);
         }
 
-        private int GetDistanceBetweenColors(int R1, int R2, int G1, int G2, int B1, int B2)
+        private int GetDistanceBetweenColors((int B, int G, int R) x1, (int B, int G, int R) x2)
         {
-            int deltaR = R1 - R2;
-            int deltaG = G1 - G2;
-            int deltaB = B1 - B2;
+
+            int deltaB = x1.B - x2.B;
+            int deltaG = x1.G - x2.G;
+            int deltaR = x1.R - x2.R;
 
             return deltaR * deltaR + deltaG * deltaG + deltaB * deltaB;
         }

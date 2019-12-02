@@ -58,23 +58,23 @@
 
             <Label Grid.Row="10" Grid.Column="1" HorizontalAlignment="Center" VerticalAlignment="Center" 
                    Visibility="{Binding ElementName=kInput, Path=Visibility}">K</Label>
-            <wT:IntegerUpDown x:Name="kInput" Grid.Row="10" Grid.Column="2" Margin="10" DefaultValue="8" Text="8" Height="35" 
+            <wT:IntegerUpDown x:Name="kInput" Grid.Row="10" Grid.Column="2" Margin="10" DefaultValue="64" Text="64" Height="35" 
                               ValueChanged="K_ValueChanged" Minimum="2" Maximum="16777216"/>
 
 
             <Label Grid.Row="10" Grid.Column="1" HorizontalAlignment="Center" VerticalAlignment="Center" 
                    Visibility="{Binding ElementName=kRInput, Path=Visibility}">Kr</Label>
-            <wT:IntegerUpDown x:Name="kRInput" Grid.Row="10" Grid.Column="2" Margin="10" DefaultValue="2" Text="2" Height="35"
+            <wT:IntegerUpDown x:Name="kRInput" Grid.Row="10" Grid.Column="2" Margin="10" DefaultValue="4" Text="4" Height="35"
                               ValueChanged="kRInput_ValueChanged"  Minimum="2" Maximum="256"/>
 
             <Label Grid.Row="11" Grid.Column="1" HorizontalAlignment="Center" VerticalAlignment="Center" 
                    Visibility="{Binding ElementName=kGInput, Path=Visibility}" >Kg</Label>
-            <wT:IntegerUpDown x:Name="kGInput" Grid.Row="11" Grid.Column="2" Margin="10" DefaultValue="2" Text="2" Height="35" 
+            <wT:IntegerUpDown x:Name="kGInput" Grid.Row="11" Grid.Column="2" Margin="10" DefaultValue="4" Text="4" Height="35" 
                               ValueChanged="kGInput_ValueChanged"  Minimum="2" Maximum="256"/>
 
             <Label Grid.Row="12" Grid.Column="1" HorizontalAlignment="Center" VerticalAlignment="Center" 
                    Visibility="{Binding ElementName=kBInput, Path=Visibility}" >Kb</Label>
-            <wT:IntegerUpDown x:Name="kBInput" Grid.Row="12" Grid.Column="2" Margin="10" DefaultValue="2" Text="2" Height="35" 
+            <wT:IntegerUpDown x:Name="kBInput" Grid.Row="12" Grid.Column="2" Margin="10" DefaultValue="4" Text="4" Height="35" 
                               ValueChanged="kBInput_ValueChanged"  Minimum="2" Maximum="256"/>
         </Grid>
         <Canvas x:Name="mainCanvas" Grid.Column="1" Loaded="mainCanvas_Loaded" />

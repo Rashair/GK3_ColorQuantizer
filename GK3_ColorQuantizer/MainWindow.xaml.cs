@@ -34,7 +34,7 @@ namespace GK3_ColorQuantizer
         const int minMargin = 10;
         int width;
         int height;
-        Uri imagePath = new Uri(@"pack://application:,,,/Resources/lena_color32.png");
+        Uri imagePath = new Uri(@"pack://application:,,,/Resources/baboon.png");
         WriteableBitmap imageBitmap;
         WriteableBitmap algorithmBitmap;
         Window currAlgWindow;
