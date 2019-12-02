@@ -58,7 +58,7 @@
 
             <Label Grid.Row="10" Grid.Column="1" HorizontalAlignment="Center" VerticalAlignment="Center" 
                    Visibility="{Binding ElementName=kInput, Path=Visibility}">K</Label>
-            <wT:IntegerUpDown x:Name="kInput" Grid.Row="10" Grid.Column="2" Margin="10" DefaultValue="2" Text="2" Height="35" 
+            <wT:IntegerUpDown x:Name="kInput" Grid.Row="10" Grid.Column="2" Margin="10" DefaultValue="8" Text="8" Height="35" 
                               ValueChanged="K_ValueChanged" Minimum="2" Maximum="16777216"/>
 
 
