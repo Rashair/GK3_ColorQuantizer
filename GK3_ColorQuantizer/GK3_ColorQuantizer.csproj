@@ -87,6 +87,7 @@
     <Compile Include="Algorithms\OrderedDitheringV2Algorithm .cs" />
     <Compile Include="Algorithms\OrderedDitheringV1Algorithm.cs" />
     <Compile Include="Algorithms\Helpers.cs" />
+    <Compile Include="Algorithms\PopularityAlgorithm.cs" />
     <Compile Include="App.xaml.cs">
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>

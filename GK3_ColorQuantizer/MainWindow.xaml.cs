@@ -133,6 +133,17 @@ namespace GK3_ColorQuantizer
 
         }
 
+        private void PopularityAlgorithmRadio_Checked(object sender, RoutedEventArgs e)
+        {
+            SetBitmapImage();
+            this.algorithm = new PopularityAlgorithm(algorithmBitmap);
+            algorithm.Apply(K, K, K);
+
+            OpenNewWindow();
+
+            SetColorInputsVisibility(Visibility.Hidden);
+        }
+
         private void OpenNewWindow()
         {
             // TODO: Bug with image resizes
@@ -153,11 +164,6 @@ namespace GK3_ColorQuantizer
             currAlgWindow.Content = canvas;
             currAlgWindow.WindowStartupLocation = WindowStartupLocation.CenterOwner;
             currAlgWindow.Show();
-        }
-
-        private void PopularityAlgorithmRadio_Checked(object sender, RoutedEventArgs e)
-        {
-            SetColorInputsVisibility(Visibility.Hidden);
         }
 
         private void PopularityAlgorithmRadio_Unchecked(object sender, RoutedEventArgs e)
@@ -197,6 +203,7 @@ namespace GK3_ColorQuantizer
             if (kInput.Value.HasValue)
             {
                 this.K = kInput.Value.Value;
+                algorithm?.Apply(K, K, K);
             }
         }
 
