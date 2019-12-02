@@ -129,10 +129,6 @@ namespace GK3_ColorQuantizer.Algorithms
         {
             int Ii = originalCopy[copyIt + colorNum];
             (int i, int j) = GetCoordinates(x, y, n);
-            if (n == 16)
-            {
-                return (byte)(Ii > matrices[n][i, j] ? 255 : 0);
-            }
 
             int col = Ii / (n * n);
             int re = Ii % (n * n);
