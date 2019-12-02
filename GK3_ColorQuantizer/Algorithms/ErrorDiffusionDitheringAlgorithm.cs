@@ -2,9 +2,9 @@
 
 namespace GK3_ColorQuantizer.Algorithms
 {
-    public class ErrorDiffusionDithering : Algorithm
+    public class ErrorDiffusionDitheringAlgorithm : Algorithm
     {
-        public ErrorDiffusionDithering(WriteableBitmap imageBitmap)
+        public ErrorDiffusionDitheringAlgorithm(WriteableBitmap imageBitmap)
         {
             this.Bitmap = imageBitmap;
         }
@@ -50,7 +50,6 @@ namespace GK3_ColorQuantizer.Algorithms
 
             bitmap.Unlock();
         }
-
 
         private unsafe void PropagateError(int error, int colorNum, byte* currPos, Position row, Position col)
         {

@@ -108,7 +108,7 @@ namespace GK3_ColorQuantizer
         private void ErrorDiffusionDitheringRadio_Checked(object sender, RoutedEventArgs e)
         {
             SetBitmapImage();
-            this.algorithm = new ErrorDiffusionDithering(algorithmBitmap);
+            this.algorithm = new ErrorDiffusionDitheringAlgorithm(algorithmBitmap);
             algorithm.Apply(Kr, Kg, Kb);
 
             OpenNewWindow();
@@ -116,11 +116,20 @@ namespace GK3_ColorQuantizer
 
         private void OrderedDitheringV1Radio_Checked(object sender, RoutedEventArgs e)
         {
+            SetBitmapImage();
+            this.algorithm = new OrderedDitheringV1Algorithm(algorithmBitmap);
+            algorithm.Apply(Kr, Kg, Kb);
 
+            OpenNewWindow();
         }
 
         private void OrderedDitheringV2Radio_Checked(object sender, RoutedEventArgs e)
         {
+            SetBitmapImage();
+            this.algorithm = new OrderedDitheringV2Algorithm(algorithmBitmap);
+            algorithm.Apply(Kr, Kg, Kb);
+
+            OpenNewWindow();
 
         }
 

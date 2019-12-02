@@ -83,13 +83,15 @@
       <SubType>Designer</SubType>
     </Page>
     <Compile Include="Algorithms\Algorithm.cs" />
+    <Compile Include="Algorithms\OrderedDitheringV2Algorithm .cs" />
+    <Compile Include="Algorithms\OrderedDitheringV1Algorithm.cs" />
     <Compile Include="Algorithms\Helpers.cs" />
     <Compile Include="App.xaml.cs">
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Algorithms\AverageDitheringAlgorithm.cs" />
-    <Compile Include="Algorithms\ErrorDiffusionDithering.cs" />
+    <Compile Include="Algorithms\ErrorDiffusionDitheringAlgorithm.cs" />
     <Compile Include="MainWindow.xaml.cs">
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
