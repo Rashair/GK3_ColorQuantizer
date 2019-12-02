@@ -131,7 +131,7 @@
     <Resource Include="Resources\lena_grayscale.bmp" />
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="Resources\lena_color24.gif" />
+    <Resource Include="Resources\baboon.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

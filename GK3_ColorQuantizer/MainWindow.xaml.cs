@@ -34,7 +34,7 @@ namespace GK3_ColorQuantizer
         const int minMargin = 10;
         int width;
         int height;
-        Uri imagePath = new Uri(@"pack://application:,,,/Resources/lena_grayscale.bmp");
+        Uri imagePath = new Uri(@"pack://application:,,,/Resources/lena_color32.png");
         WriteableBitmap imageBitmap;
         WriteableBitmap algorithmBitmap;
         Window currAlgWindow;
@@ -57,14 +57,14 @@ namespace GK3_ColorQuantizer
         private void SetBitmapImage()
         {
             BitmapSource img = new BitmapImage(imagePath);
-            if (img.Height > height || img.Width > width)
+            if (img.PixelHeight > height || img.PixelWidth > width)
             {
                 img = new TransformedBitmap(img,
-                    new ScaleTransform(width / (img.Width + 2 * minMargin), height / (img.Height + 2 * minMargin)));
+                    new ScaleTransform(width / (img.PixelWidth + 2 * minMargin), height / (img.PixelHeight + 2 * minMargin)));
             }
-            if (img.Format != PixelFormats.Bgr32)
+            if (img.Format != PixelFormats.Bgr24)
             {
-                img = new FormatConvertedBitmap(img, PixelFormats.Bgr32, null, 0);
+                img = new FormatConvertedBitmap(img, PixelFormats.Bgr24, null, 0);
             }
 
             this.imageBitmap = new WriteableBitmap(img);
