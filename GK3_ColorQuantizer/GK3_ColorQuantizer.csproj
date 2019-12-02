@@ -83,6 +83,7 @@
       <SubType>Designer</SubType>
     </Page>
     <Compile Include="Algorithms\Algorithm.cs" />
+    <Compile Include="Algorithms\OrderedDitheringAlgorithm.cs" />
     <Compile Include="Algorithms\OrderedDitheringV2Algorithm .cs" />
     <Compile Include="Algorithms\OrderedDitheringV1Algorithm.cs" />
     <Compile Include="Algorithms\Helpers.cs" />
