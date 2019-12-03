@@ -60,7 +60,7 @@ namespace GK3_ColorQuantizer
             if (img.PixelHeight > height || img.PixelWidth > width)
             {
                 img = new TransformedBitmap(img,
-                    new ScaleTransform(width / (img.PixelWidth + 2 * minMargin), height / (img.PixelHeight + 2 * minMargin)));
+                    new ScaleTransform(width / (double)(img.PixelWidth + 2 * minMargin), height / (double)(img.PixelHeight + 2 * minMargin)));
             }
             if (img.Format != PixelFormats.Bgr24)
             {
@@ -250,6 +250,155 @@ namespace GK3_ColorQuantizer
                 SetBitmapImage();
                 NoneRadio.IsChecked = true;
             }
+        }
+
+        WriteableBitmap bmp1;
+        WriteableBitmap bmp2;
+        WriteableBitmap bmp3;
+        WriteableBitmap bmp4;
+
+        private void GeneratePictureButton_Click(object sender, RoutedEventArgs e)
+        {
+            const int size = 384;
+
+            mainCanvas.Children.Clear();
+            int marg = 10;
+
+            bmp1 = BitmapFactory.New(size, size);
+            SetTriangles(bmp1);
+            var host1 = new Image();
+            Canvas.SetLeft(host1, marg);
+            Canvas.SetTop(host1, marg);
+            host1.Source = bmp1;
+            mainCanvas.Children.Add(host1);
+
+
+            bmp2 = new WriteableBitmap(bmp1);
+            ConvertToGreyScale1(bmp2);
+            var host2 = new Image();
+            Canvas.SetLeft(host2, marg + size);
+            Canvas.SetTop(host2, marg);
+            host2.Source = bmp2;
+            mainCanvas.Children.Add(host2);
+
+
+            bmp3 = new WriteableBitmap(bmp1);
+            ConvertToGreyScale2(bmp3);
+            var host3 = new Image();
+            Canvas.SetLeft(host3, marg);
+            Canvas.SetTop(host3, size + marg - 1);
+            host3.Source = bmp3;
+            mainCanvas.Children.Add(host3);
+
+
+            bmp4 = new WriteableBitmap(bmp1);
+            ConvertToAverage(bmp4);
+            var host4 = new Image();
+            Canvas.SetLeft(host4, size + marg);
+            Canvas.SetTop(host4, size + marg - 1);
+            host4.Source = bmp4;
+            mainCanvas.Children.Add(host4);
+        }
+
+        private void SetTriangles(WriteableBitmap bmp)
+        {
+            int bytesPerPixel = (bmp.Format.BitsPerPixel + 7) / 8;
+
+            using var context = bmp.GetBitmapContext();
+            var size = bmp.PixelWidth / 2;
+            bmp.FillTriangle(0, 0, 0, size, size, size, Colors.Red);
+            bmp.FillTriangle(0, 0, size, 0, size, size, Colors.Lime);
+
+            bmp.FillTriangle(size, 0, size, size, size + size, size, Colors.Blue);
+            bmp.FillTriangle(size, 0, size + size, 0, size + size, size, Colors.Cyan);
+
+            bmp.FillTriangle(0, size, 0, size + size, size, size + size, Colors.Magenta);
+            bmp.FillTriangle(0, size, size, size, size, size + size, Colors.Yellow);
+
+            bmp.FillTriangle(size, size, size, size + size, size + size, size + size, Colors.White);
+            bmp.FillTriangle(size, size, size + size, size, size + size, size + size, Colors.Black);
+
+        }
+
+        private void ConvertToGreyScale1(WriteableBitmap bmp)
+        {
+            int bytesPerPixel = (bmp.Format.BitsPerPixel + 7) / 8;
+            bmp.Lock();
+
+            unsafe
+            {
+                int copyIt = 0;
+                byte* currPos = (byte*)bmp.BackBuffer.ToPointer();
+                for (int i = 0; i < bmp.PixelHeight; ++i)
+                {
+                    for (int j = 0; j < bmp.PixelWidth; ++j)
+                    {
+                        byte val = ((int)(0.299 * currPos[2] + 0.587 * currPos[1] + 0.114 * currPos[0])).ToByte();
+                        currPos[0] = val;
+                        currPos[1] = val;
+                        currPos[2] = val;
+
+                        currPos += bytesPerPixel;
+                        copyIt += bytesPerPixel;
+                    }
+                }
+            }
+            bmp.AddDirtyRect(new Int32Rect(0, 0, bmp.PixelWidth, bmp.PixelHeight));
+            bmp.Unlock();
+        }
+
+        private void ConvertToGreyScale2(WriteableBitmap bmp)
+        {
+            int bytesPerPixel = (bmp.Format.BitsPerPixel + 7) / 8;
+            bmp.Lock();
+            unsafe
+            {
+                int copyIt = 0;
+                byte* currPos = (byte*)bmp.BackBuffer.ToPointer();
+                for (int i = 0; i < bmp.PixelHeight; ++i)
+                {
+                    for (int j = 0; j < bmp.PixelWidth; ++j)
+                    {
+                        byte val = ((int)((currPos[2] + +currPos[1] + currPos[0]) / 3.0)).ToByte();
+                        currPos[0] = val;
+                        currPos[1] = val;
+                        currPos[2] = val;
+
+                        currPos += bytesPerPixel;
+                        copyIt += bytesPerPixel;
+                    }
+                }
+            }
+            bmp.AddDirtyRect(new Int32Rect(0, 0, bmp.PixelWidth, bmp.PixelHeight));
+            bmp.Unlock();
+        }
+
+        private void ConvertToAverage(WriteableBitmap bmp)
+        {
+            int bytesPerPixel = (bmp.Format.BitsPerPixel + 7) / 8;
+            bmp.Lock();
+            unsafe
+            {
+                int copyIt = 0;
+                byte* currPos = (byte*)bmp.BackBuffer.ToPointer();
+                for (int i = 0; i < bmp.PixelHeight; ++i)
+                {
+                    for (int j = 0; j < bmp.PixelWidth; ++j)
+                    {
+                        var min = Math.Min(currPos[2], Math.Min(currPos[1], currPos[0]));
+                        var max = Math.Max(currPos[2], Math.Max(currPos[1], currPos[0]));
+                        byte val = ((min + max) / 2).ToByte();
+                        currPos[0] = val;
+                        currPos[1] = val;
+                        currPos[2] = val;
+
+                        currPos += bytesPerPixel;
+                        copyIt += bytesPerPixel;
+                    }
+                }
+            }
+            bmp.AddDirtyRect(new Int32Rect(0, 0, bmp.PixelWidth, bmp.PixelHeight));
+            bmp.Unlock();
         }
     }
 }

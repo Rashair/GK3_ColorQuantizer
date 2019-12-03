@@ -39,7 +39,13 @@
                 <ColumnDefinition Width="1*"></ColumnDefinition>
             </Grid.ColumnDefinitions>
 
-            <Button x:Name="ChoosePictureButton" Grid.Row="1" Grid.Column="1" Grid.ColumnSpan="2" Margin="10" Click="ChoosePictureButton_Click">Choose picture</Button>
+            <Button x:Name="GeneratePictureButton" Grid.Row="1" Grid.Column="1" Grid.ColumnSpan="1" Margin="10" Click="GeneratePictureButton_Click">
+                Gen
+            </Button>
+            
+            <Button x:Name="ChoosePictureButton" Grid.Row="1" Grid.Column="2" Grid.ColumnSpan="1" Margin="10" Click="ChoosePictureButton_Click">
+                Load picture
+            </Button>
 
             <Label Grid.Row="2" Grid.Column="1" Grid.ColumnSpan="2" HorizontalAlignment="Left" VerticalAlignment="Center" >Algorithm:</Label>
             <RadioButton x:Name="NoneRadio" GroupName="Algorithm" Grid.Row="3"  Grid.Column="1" Grid.ColumnSpan="2" Margin="10,10,0,0" 
